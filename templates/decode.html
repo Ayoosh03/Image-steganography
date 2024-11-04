@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decode Message</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script>
+        function previewImage(input, previewId) {
+            var preview = document.getElementById(previewId);
+            var file = input.files[0];
+            var reader = new FileReader();
+            
+            reader.onloadend = function() {
+                preview.src = reader.result;
+            }
+            
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "";
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Decode Message</h1>
+        <form method="post" enctype="multipart/form-data" action="{{ url_for('decode') }}">
+            <div class="file-input">
+                <label for="decode_image">Select Image:</label>
+                <input type="file" name="image" id="decode_image" accept="image/*" onchange="previewImage(this, 'decode_preview')" required>
+            </div>
+            <div class="image-preview">
+                <img id="decode_preview" src="#" alt="Image preview...">
+            </div>
+            <div class="buttons">
+                <button type="submit">Decode</button>
+                <a href="{{ url_for('index') }}" class="button">Back</a>
+            </div>
+        </form>
+        {% if decoded_message %}
+        <div class="section decoded-message">
+            <h2>Decoded Message:</h2>
+            <p>{{ decoded_message }}</p>
+        </div>
+        {% endif %}
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>

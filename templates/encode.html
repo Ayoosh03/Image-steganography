@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encode Message</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script>
+        function previewImage(input, previewId) {
+            var preview = document.getElementById(previewId);
+            var file = input.files[0];
+            var reader = new FileReader();
+            
+            reader.onloadend = function() {
+                preview.src = reader.result;
+            }
+            
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "";
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Encode Message</h1>
+        <form method="post" enctype="multipart/form-data" action="{{ url_for('encode') }}">
+            <div class="file-input">
+                <label for="encode_image">Select Image:</label>
+                <input type="file" name="image" id="encode_image" accept="image/*" onchange="previewImage(this, 'encode_preview')" required>
+            </div>
+            <div class="image-preview">
+                <img id="encode_preview" src="#" alt="Image preview...">
+            </div>
+            <div class="message-input">
+                <label for="message">Enter Message to Encode:</label>
+                <textarea name="message" id="message" rows="4" required></textarea>
+            </div>
+            <div class="buttons">
+                <button type="submit">Encode</button>
+                <a href="{{ url_for('index') }}" class="button">Back</a>
+            </div>
+        </form>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>
